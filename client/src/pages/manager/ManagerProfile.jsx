@@ -1,38 +1,36 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import ManagerNavbar from "../../components/layout/ManagerNavbar";
 import ManagerSidebar from "../../components/layout/ManagerSidebar";
-import { UserCircle,Mail,Edit } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { UserCircle, Mail } from "lucide-react";
 import { getProfile } from "../../api/userApi";
 import { toast } from "react-toastify";
-function ManagerProfile(){
-    const navigate=useNavigate();
-    const [profile,setProfile]=useState({
-        name:"",
-        email:"",
-        role:"",
-        department:""
+function ManagerProfile() {
+    const [profile, setProfile] = useState({
+        name: "",
+        email: "",
+        role: "",
+        department: ""
     });
-    useEffect(()=>{
+    useEffect(() => {
         fetchProfile();
-    },[]);
-    const fetchProfile=async()=>{
-        try{
-            const res=await getProfile();
+    }, []);
+    const fetchProfile = async () => {
+        try {
+            const res = await getProfile();
             setProfile(res.data);
-        }catch(error){
+        } catch (error) {
             toast.error("Failed to load profile");
         }
     };
-    return(
+    return (
         <div className="flex min-h-screen bg-slate-100">
-            <ManagerSidebar/>
+            <ManagerSidebar />
             <div className="flex-1">
-                <ManagerNavbar/>
+                <ManagerNavbar />
                 <div className="p-8">
                     <div className="bg-white rounded-2xl shadow-lg max-w-3xl mx-auto overflow-hidden">
                         <div className="bg-blue-700 p-8 text-white text-center">
-                            <UserCircle size={90} className="mx-auto mb-4"/>
+                            <UserCircle size={90} className="mx-auto mb-4" />
                             <h1 className="text-3xl font-bold">
                                 Manager Profile
                             </h1>
@@ -46,7 +44,7 @@ function ManagerProfile(){
                                     Full Name
                                 </label>
                                 <div className="relative">
-                                    <UserCircle size={20} className="absolute left-4 top-4 text-gray-400"/>
+                                    <UserCircle size={20} className="absolute left-4 top-4 text-gray-400" />
                                     <input
                                         value={profile.name || ""}
                                         readOnly
@@ -59,7 +57,7 @@ function ManagerProfile(){
                                     Email
                                 </label>
                                 <div className="relative">
-                                    <Mail size={20} className="absolute left-4 top-4 text-gray-400"/>
+                                    <Mail size={20} className="absolute left-4 top-4 text-gray-400" />
                                     <input
                                         value={profile.email || ""}
                                         readOnly
@@ -105,15 +103,6 @@ function ManagerProfile(){
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={()=>navigate("/manager/edit-profile")}
-                                    className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-6 py-3 rounded-xl"
-                                >
-                                    <Edit size={20}/>
-                                    Edit Profile
-                                </button>
                             </div>
                         </div>
                     </div>
