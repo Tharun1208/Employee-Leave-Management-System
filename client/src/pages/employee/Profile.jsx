@@ -25,8 +25,7 @@ function Profile() {
       const res = await getProfile();
       setUser(res.data);
     } catch (error) {
-      console.log(error);
-      toast.error("Failed to load profile");
+            toast.error("Failed to load profile");
     } finally {
       setLoading(false);
     }

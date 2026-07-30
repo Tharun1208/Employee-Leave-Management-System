@@ -5,7 +5,6 @@ import { UserCircle,Mail,Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getProfile } from "../../api/userApi";
 import { toast } from "react-toastify";
-
 function ManagerProfile(){
     const navigate=useNavigate();
     const [profile,setProfile]=useState({
@@ -22,7 +21,6 @@ function ManagerProfile(){
             const res=await getProfile();
             setProfile(res.data);
         }catch(error){
-            console.log(error.response?.data || error.message);
             toast.error("Failed to load profile");
         }
     };

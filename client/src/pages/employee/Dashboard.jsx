@@ -20,7 +20,7 @@ function Dashboard() {
       const res = await getMyLeaves();
       setLeaves(res.data);
     } catch (error) {
-      console.log(error);
+      
     }
   };
 

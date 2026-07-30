@@ -5,28 +5,20 @@ import ManagerNavbar from "../../components/layout/ManagerNavbar";
 import ManagerSidebar from "../../components/layout/ManagerSidebar";
 import { getNotifications,markNotificationRead,deleteNotification } from "../../api/notificationApi";
 import { toast } from "react-toastify";
-
 function Notifications(){
   const navigate=useNavigate();
   const [notifications,setNotifications]=useState([]);
-
   useEffect(()=>{
     fetchNotifications();
   },[]);
-
   const fetchNotifications=async()=>{
     try{
       const response=await getNotifications();
       setNotifications(response.data);
     }catch(error){
-      console.log(
-        "Notification Error:",
-        error.response?.data || error.message
-      );
       toast.error("Failed to load notifications");
     }
   };
-
   const markAsRead=async(id)=>{
     try{
       await markNotificationRead(id);
@@ -39,11 +31,9 @@ function Notifications(){
       );
       toast.success("Notification marked as read");
     }catch(error){
-      console.log(error);
       toast.error("Failed to update notification");
     }
   };
-
   const removeNotification=async(id)=>{
     try{
       await deleteNotification(id);
@@ -54,11 +44,9 @@ function Notifications(){
       );
       toast.success("Notification deleted");
     }catch(error){
-      console.log(error);
       toast.error("Failed to delete notification");
     }
   };
-
   return(
     <div className="flex min-h-screen bg-slate-100">
       <ManagerSidebar/>
@@ -77,10 +65,7 @@ function Notifications(){
               ?
               (
                 <div className="bg-white rounded-2xl shadow p-12 text-center">
-                  <Bell
-                    size={60}
-                    className="mx-auto text-gray-400 mb-4"
-                  />
+                  <Bell size={60} className="mx-auto text-gray-400 mb-4"/>
                   <h2 className="text-2xl font-semibold text-gray-600">
                     No Notifications
                   </h2>
@@ -101,13 +86,7 @@ function Notifications(){
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex gap-4">
-                      <Bell
-                        className={
-                          notification.is_read
-                          ?"text-gray-500"
-                          :"text-blue-700"
-                        }
-                      />
+                      <Bell className={notification.is_read?"text-gray-500":"text-blue-700"}/>
                       <div>
                         <h2 className="text-xl font-semibold">
                           Leave Status Update

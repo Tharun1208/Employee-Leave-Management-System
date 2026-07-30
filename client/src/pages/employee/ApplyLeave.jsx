@@ -60,7 +60,7 @@ function ApplyLeave() {
 
       const response = await applyLeave(data);
 
-      console.log(response.data);
+      
 
       toast.success(
         "Leave applied successfully!"
@@ -79,7 +79,7 @@ function ApplyLeave() {
 
     } catch(error){
 
-      console.log(error);
+      
 
       toast.error(
         error.response?.data?.message ||
