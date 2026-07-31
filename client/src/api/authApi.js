@@ -1,21 +1,27 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://employee-leave-management-system-ug86.onrender.com/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
 });
 
+// Register user
 export const registerUser = (data) => {
   return API.post("/auth/register", data);
 };
 
+// Login user
 export const loginUser = (data) => {
   return API.post("/auth/login", data);
 };
-export const updateEmployee = (id, data) => {
-    return API.put(`/employees/${id}`, data);
+
+// Forgot password
+export const forgotPassword = (data) => {
+  return API.post("/auth/forgot-password", data);
 };
 
-export const deleteEmployee = (id) => {
-    return API.delete(`/employees/${id}`);
+// Reset password
+export const resetPassword = (data) => {
+  return API.post("/auth/reset-password", data);
 };
+
 export default API;

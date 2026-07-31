@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { CalendarDays, Upload, FileText, Calendar, Send } from "lucide-react";
 import { toast } from "react-toastify";
-import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
 import { applyLeave } from "../../api/leaveApi";
 
@@ -66,12 +65,11 @@ function ApplyLeave() {
 
       <div className="flex-1 min-w-0">
 
-        <Navbar />
-
         <main className="p-4 sm:p-6 lg:p-8">
 
           <div className="max-w-5xl mx-auto">
 
+            {/* Header */}
             <div className="group bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 rounded-3xl shadow-2xl p-5 sm:p-8 text-white mb-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-blue-500/40">
 
               <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -97,7 +95,10 @@ function ApplyLeave() {
               </div>
 
             </div>
-                        <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300">
+
+
+            {/* Form Card */}
+            <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300">
 
               <div className="bg-gradient-to-r from-slate-50 to-blue-50 px-5 sm:px-8 py-5 sm:py-6 border-b">
 
@@ -111,23 +112,28 @@ function ApplyLeave() {
 
               </div>
 
-              <form onSubmit={handleSubmit} className="p-5 sm:p-8 space-y-6">
 
+              <form
+                onSubmit={handleSubmit}
+                className="p-5 sm:p-8 space-y-6"
+              >
+
+                {/* Leave Type */}
                 <div>
 
                   <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
 
                     <FileText size={18}/>
-
                     Leave Type
 
                   </label>
+
 
                   <select
                     name="leave_type"
                     value={formData.leave_type}
                     onChange={handleChange}
-                    className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 bg-white outline-none transition-all duration-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-blue-400"
+                    className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 bg-white outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                     required
                   >
 
@@ -164,15 +170,16 @@ function ApplyLeave() {
                 </div>
 
 
+                {/* Reason */}
                 <div>
 
                   <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
 
                     <FileText size={18}/>
-
                     Leave Reason
 
                   </label>
+
 
                   <textarea
                     name="reason"
@@ -180,13 +187,14 @@ function ApplyLeave() {
                     value={formData.reason}
                     onChange={handleChange}
                     placeholder="Describe your reason for requesting leave..."
-                    className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 resize-none outline-none transition-all duration-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-blue-400"
+                    className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 resize-none outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                     required
                   />
 
                 </div>
 
 
+                {/* Dates */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
 
                   <div>
@@ -194,7 +202,6 @@ function ApplyLeave() {
                     <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
 
                       <Calendar size={18}/>
-
                       Start Date
 
                     </label>
@@ -205,7 +212,7 @@ function ApplyLeave() {
                       name="start_date"
                       value={formData.start_date}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 outline-none transition-all duration-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-blue-400"
+                      className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                       required
                     />
 
@@ -217,7 +224,6 @@ function ApplyLeave() {
                     <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
 
                       <Calendar size={18}/>
-
                       End Date
 
                     </label>
@@ -228,7 +234,7 @@ function ApplyLeave() {
                       name="end_date"
                       value={formData.end_date}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 outline-none transition-all duration-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 hover:border-blue-400"
+                      className="w-full rounded-2xl border-2 border-slate-200 px-4 sm:px-5 py-3 sm:py-4 outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
                       required
                     />
 
@@ -237,20 +243,20 @@ function ApplyLeave() {
                 </div>
 
 
+                {/* Document */}
                 <div>
 
                   <label className="flex items-center gap-2 text-gray-700 font-semibold mb-3">
 
                     <Upload size={18}/>
-
                     Supporting Document
 
                   </label>
 
 
-                  <label className="group flex flex-col sm:flex-row items-center gap-4 w-full border-2 border-dashed border-blue-300 rounded-2xl px-5 py-6 cursor-pointer bg-blue-50 hover:bg-blue-100 hover:border-blue-600 transition-all duration-300">
+                  <label className="group flex flex-col sm:flex-row items-center gap-4 w-full border-2 border-dashed border-blue-300 rounded-2xl px-5 py-6 cursor-pointer bg-blue-50 hover:bg-blue-100 transition">
 
-                    <div className="w-14 h-14 flex-shrink-0 rounded-full bg-blue-600 text-white flex items-center justify-center group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+                    <div className="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center">
 
                       <Upload size={24}/>
 
@@ -285,9 +291,12 @@ function ApplyLeave() {
                   </label>
 
                 </div>
-                                <button
+
+
+                {/* Submit */}
+                <button
                   type="submit"
-                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white text-base sm:text-lg font-semibold py-3 sm:py-4 rounded-2xl shadow-lg hover:shadow-blue-300 hover:-translate-y-1 active:scale-95 transition-all duration-300"
+                  className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white text-base sm:text-lg font-semibold py-3 sm:py-4 rounded-2xl shadow-lg hover:shadow-blue-300 hover:-translate-y-1 active:scale-95 transition"
                 >
 
                   <Send size={22}/>
@@ -295,6 +304,7 @@ function ApplyLeave() {
                   Submit Leave Request
 
                 </button>
+
 
               </form>
 

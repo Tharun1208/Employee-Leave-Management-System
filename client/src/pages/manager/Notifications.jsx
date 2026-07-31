@@ -72,7 +72,7 @@ function Notifications() {
           >
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">
-                Notifications 🔔
+                Notifications
               </h1>
               <p className="mt-2 text-blue-100 text-sm sm:text-base">
                 Stay updated with employee leave activities and important updates.

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { User, Mail, Phone, Building2, Calendar, BadgeCheck } from "lucide-react";
-import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
 import { toast } from "react-toastify";
 import { getProfile } from "../../api/userApi";
@@ -29,7 +28,6 @@ function Profile() {
       <div className="flex min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200">
         <Sidebar />
         <div className="flex-1 min-w-0">
-          <Navbar />
           <div className="flex justify-center items-center h-[80vh] text-lg sm:text-xl font-semibold text-gray-500">
             Loading Profile...
           </div>
@@ -42,7 +40,6 @@ function Profile() {
     <div className="flex min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200">
       <Sidebar />
       <div className="flex-1 min-w-0">
-        <Navbar />
         <main className="p-4 sm:p-6 lg:p-8">
           <div className="max-w-6xl mx-auto">
             <div className="group bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 rounded-3xl shadow-2xl p-5 sm:p-8 text-white mb-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-blue-500/40">

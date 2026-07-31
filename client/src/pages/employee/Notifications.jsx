@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
 import { Bell, CheckCircle, XCircle, Clock } from "lucide-react";
 import { toast } from "react-toastify";
@@ -49,7 +48,6 @@ function Notifications() {
     <div className="flex min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200">
       <Sidebar />
       <div className="flex-1 min-w-0">
-        <Navbar />
         <main className="p-4 sm:p-6 lg:p-8">
           <div className="group bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 rounded-3xl shadow-2xl p-5 sm:p-8 text-white mb-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-blue-500/40">
             <div className="flex items-center justify-between gap-4 flex-wrap">

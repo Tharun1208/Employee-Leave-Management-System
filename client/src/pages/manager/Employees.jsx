@@ -87,7 +87,7 @@ function Employees() {
           <div className="mb-6 sm:mb-8 bg-gradient-to-r from-blue-700 via-blue-800 to-indigo-900 rounded-3xl p-5 sm:p-8 text-white shadow-xl flex items-center justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl group">
             <div className="min-w-0">
               <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">
-                Manage Employees 👥
+                Manage Employees
               </h1>
               <p className="mt-2 text-blue-100 text-sm sm:text-base">
                 View, update and manage employee information easily.
