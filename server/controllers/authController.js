@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
     const {
         name,
-        username,
         email,
         phone,
         department,
@@ -40,7 +39,6 @@ exports.register = async (req, res) => {
                 INSERT INTO users
                 (
                     name,
-                    username,
                     email,
                     phone,
                     department,
@@ -54,7 +52,6 @@ exports.register = async (req, res) => {
                 insertSql,
                 [
                     name,
-                    username,
                     email,
                     phone,
                     department,
@@ -69,17 +66,17 @@ exports.register = async (req, res) => {
                         });
                     }
 
-                    const prefix = (role || "employee") === "manager"
-                        ? "MGR"
-                        : "EMP";
-
-                    const employeeId =
-                        prefix + String(result.insertId).padStart(3, "0");
+                    const userRole = role || "employee";
+                    const prefix = userRole === "manager" ? "MGR" : "EMP";
 
                     db.query(
-                        "UPDATE users SET employee_id = ? WHERE id = ?",
-                        [employeeId, result.insertId],
-                        (err) => {
+                        `SELECT employee_id
+                         FROM users
+                         WHERE role = ?
+                         ORDER BY employee_id DESC
+                         LIMIT 1`,
+                        [userRole],
+                        (err, rows) => {
                             if (err) {
                                 return res.status(500).json({
                                     message: "Employee ID generation failed",
@@ -87,10 +84,33 @@ exports.register = async (req, res) => {
                                 });
                             }
 
-                            res.status(201).json({
-                                message: "User registered successfully",
-                                employee_id: employeeId
-                            });
+                            let nextNumber = 1;
+
+                            if (rows.length > 0 && rows[0].employee_id) {
+                                const lastId = rows[0].employee_id;
+                                const lastNumber = parseInt(lastId.substring(3), 10);
+                                nextNumber = lastNumber + 1;
+                            }
+
+                            const employeeId = prefix + String(nextNumber).padStart(3, "0");
+
+                            db.query(
+                                "UPDATE users SET employee_id = ? WHERE id = ?",
+                                [employeeId, result.insertId],
+                                (err) => {
+                                    if (err) {
+                                        return res.status(500).json({
+                                            message: "Employee ID generation failed",
+                                            error: err
+                                        });
+                                    }
+
+                                    res.status(201).json({
+                                        message: "User registered successfully",
+                                        employee_id: employeeId
+                                    });
+                                }
+                            );
                         }
                     );
                 }
@@ -129,10 +149,7 @@ exports.login = (req, res) => {
 
         const user = result[0];
 
-        const match = await bcrypt.compare(
-            password,
-            user.password
-        );
+        const match = await bcrypt.compare(password, user.password);
 
         if (!match) {
             return res.status(401).json({
@@ -158,8 +175,7 @@ exports.login = (req, res) => {
                 id: user.id,
                 employee_id: user.employee_id,
                 name: user.name,
-                username: user.username,
-                email: user.email,
+                                email: user.email,
                 phone: user.phone,
                 department: user.department,
                 role: user.role
@@ -167,4 +183,3 @@ exports.login = (req, res) => {
         });
     });
 };
-

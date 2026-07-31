@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ManagerSidebar from "../../components/layout/ManagerSidebar";
 import { Search, Pencil, Trash2, X, Users } from "lucide-react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 import { getEmployees, updateEmployee, deleteEmployee } from "../../api/userApi";
 
 function Employees() {
@@ -61,15 +62,40 @@ function Employees() {
     }
   };
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
-    try {
-      await deleteEmployee(id);
-      toast.success("Employee deleted successfully");
-      fetchEmployees();
-    } catch (error) {
-      toast.error("Delete failed");
-    }
-  };
+  const result = await Swal.fire({
+    title: "Delete Employee?",
+    text: "Are you sure you want to delete this employee?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#dc2626",
+    cancelButtonColor: "#2563eb",
+    confirmButtonText: "Yes, Delete",
+    cancelButtonText: "Cancel",
+    reverseButtons: true
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    await deleteEmployee(id);
+
+    await Swal.fire({
+      title: "Deleted!",
+      text: "Employee deleted successfully.",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false
+    });
+
+    fetchEmployees();
+  } catch (error) {
+    Swal.fire({
+      title: "Error",
+      text: "Failed to delete employee.",
+      icon: "error"
+    });
+  }
+};
   const filteredEmployees = employees.filter((employee) => {
     const keyword = search.toLowerCase();
     return (

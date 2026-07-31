@@ -22,7 +22,6 @@ function Register() {
 
   const initialForm = {
     fullName: "",
-    username: "",
     email: "",
     phone: "",
     department: "",
@@ -59,7 +58,6 @@ function Register() {
 
       const response = await registerUser({
         name: formData.fullName,
-        username: formData.username,
         email: formData.email,
         phone: formData.phone,
         department: formData.department,
@@ -103,7 +101,7 @@ function Register() {
 
           <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:rotate-6">
 
-            <UserPlus size={55}/>
+            <UserPlus size={55} />
 
           </div>
 
@@ -142,7 +140,7 @@ function Register() {
             autoComplete="off"
             className="mt-5 space-y-3"
           >
-                        <div>
+            <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Full Name
               </label>
@@ -169,31 +167,6 @@ function Register() {
             </div>
 
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">
-                Username
-              </label>
-
-              <div className="relative">
-
-                <User
-                  size={17}
-                  className="absolute left-3 top-3.5 text-gray-400"
-                />
-
-                <input
-                  type="text"
-                  name="username"
-                  autoComplete="off"
-                  placeholder="Username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-
-              </div>
-            </div>
 
 
             <div>
@@ -299,7 +272,7 @@ function Register() {
 
               </div>
             </div>
-                        <div>
+            <div>
               <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Password
               </label>
@@ -329,8 +302,8 @@ function Register() {
                 >
                   {
                     showPassword
-                      ? <EyeOff size={17}/>
-                      : <Eye size={17}/>
+                      ? <EyeOff size={17} />
+                      : <Eye size={17} />
                   }
                 </button>
 
@@ -368,8 +341,8 @@ function Register() {
                 >
                   {
                     showConfirmPassword
-                      ? <EyeOff size={17}/>
-                      : <Eye size={17}/>
+                      ? <EyeOff size={17} />
+                      : <Eye size={17} />
                   }
                 </button>
 
