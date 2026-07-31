@@ -32,12 +32,10 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login Data:", formData);
+
 
     try {
       const res = await loginUser(formData);
-
-      console.log("Login Response:", res.data);
 
       localStorage.setItem(
         "token",
@@ -61,7 +59,7 @@ function Login() {
 
     } catch (err) {
 
-      console.log("Login Error:", err.response?.data);
+
 
       toast.error(
         err.response?.data?.message ||
@@ -188,8 +186,8 @@ function Login() {
 
                   {
                     showPassword
-                    ? <EyeOff size={21}/>
-                    : <Eye size={21}/>
+                      ? <EyeOff size={21} />
+                      : <Eye size={21} />
                   }
 
                 </button>
