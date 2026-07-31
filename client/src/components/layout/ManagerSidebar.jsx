@@ -1,162 +1,179 @@
-import {
-  LayoutDashboard,
-  Users,
-  ClipboardList,
-  Bell,
-  User,
-  LogOut,
-  Menu,
-} from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Bell, User, LogOut, PanelLeft } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function ManagerSidebar() {
-
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(
+    localStorage.getItem("managerSidebar") !== "closed"
+  );
+  const [clickedIcon, setClickedIcon] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "managerSidebar",
+      isOpen ? "open" : "closed"
+    );
+  }, [isOpen]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("managerSidebar");
     navigate("/login");
   };
 
+  const handleIconClick = (path) => {
+    setClickedIcon(path);
+
+    setTimeout(() => {
+      setClickedIcon(null);
+    }, 800);
+  };
+
+  const menuItems = [
+    {
+      path: "/manager/dashboard",
+      icon: LayoutDashboard,
+      label: "Dashboard"
+    },
+    {
+      path: "/manager/employees",
+      icon: Users,
+      label: "Employees"
+    },
+    {
+      path: "/manager/leave-requests",
+      icon: ClipboardList,
+      label: "Leave Requests"
+    },
+    {
+      path: "/manager/notifications",
+      icon: Bell,
+      label: "Notifications"
+    },
+    {
+      path: "/manager/profile",
+      icon: User,
+      label: "Profile"
+    }
+  ];
+
   return (
     <aside
-      className={`${
-        isOpen ? "w-64" : "w-20"
-      } min-h-screen bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300`}
+      className={`
+        ${isOpen ? "w-64" : "w-20"}
+        min-h-screen
+        bg-gradient-to-b
+        from-blue-800
+        via-blue-700
+        to-indigo-800
+        text-white
+        shadow-2xl
+        flex
+        flex-col
+        transition-all
+        duration-300
+        shrink-0
+      `}
     >
-
-      <div className="h-16 flex items-center px-4 border-b border-blue-600">
-
+      <div className="h-16 flex items-center px-3 border-b border-blue-600">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-lg transition w-full"
+          className="flex items-center gap-3 w-full px-3 py-2 rounded-xl hover:bg-white/10 transition-all duration-300"
         >
-
-          <Menu size={26} />
-
+          <PanelLeft
+            size={26}
+            className="transition-transform duration-500 hover:rotate-180"
+          />
           {isOpen && (
-            <span className="text-lg font-semibold">
-              Menu
+            <span className="text-lg font-bold tracking-wide">
+              Manager
             </span>
           )}
-
         </button>
-
       </div>
 
+      <nav className="mt-6 flex flex-col gap-3 px-3 flex-1">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
 
-      <nav className="mt-6 flex flex-col gap-2 px-2 flex-1">
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              onMouseDown={() => handleIconClick(item.path)}
+              className={({ isActive }) => `
+                flex
+                items-center
+                ${isOpen ? "px-4" : "justify-center"}
+                py-3
+                rounded-xl
+                transition-all
+                duration-300
+                overflow-hidden
+                ${
+                  isActive
+                    ? "bg-white text-blue-700 shadow-lg font-semibold scale-[1.03]"
+                    : "hover:bg-white/10 hover:translate-x-1"
+                }
+              `}
+            >
+              <Icon
+                size={22}
+                className={`
+                  shrink-0
+                  transition-all
+                  duration-500
+                  ${
+                    clickedIcon === item.path
+                      ? "animate-bounce scale-125 rotate-12"
+                      : ""
+                  }
+                `}
+              />
 
-
-        <NavLink
-          to="/manager/dashboard"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <LayoutDashboard size={22} />
-          {isOpen && <span className="ml-3">Dashboard</span>}
-        </NavLink>
-
-
-        <NavLink
-          to="/manager/employees"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <Users size={22} />
-          {isOpen && <span className="ml-3">Employees</span>}
-        </NavLink>
-
-
-        <NavLink
-          to="/manager/leave-requests"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <ClipboardList size={22} />
-          {isOpen && <span className="ml-3">Leave Requests</span>}
-        </NavLink>
-
-
-        <NavLink
-          to="/manager/notifications"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <Bell size={22} />
-          {isOpen && <span className="ml-3">Notifications</span>}
-        </NavLink>
-
-
-        <NavLink
-          to="/manager/profile"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <User size={22} />
-          {isOpen && <span className="ml-3">Profile</span>}
-        </NavLink>
-
-
+              {isOpen && (
+                <span className="ml-3 whitespace-nowrap text-sm sm:text-base">
+                  {item.label}
+                </span>
+              )}
+            </NavLink>
+          );
+        })}
       </nav>
 
-
-      <div className="p-4">
-
+      <div className="p-3 sm:p-4 border-t border-blue-600">
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center ${
-            isOpen ? "justify-center gap-2" : "justify-center"
-          } bg-red-600 hover:bg-red-700 py-3 rounded-xl transition font-semibold`}
+          className="
+            w-full
+            flex
+            items-center
+            justify-center
+            gap-2
+            bg-red-600
+            hover:bg-red-700
+            hover:scale-105
+            py-3
+            rounded-xl
+            transition-all
+            duration-300
+            shadow-lg
+          "
         >
+          <LogOut
+            size={20}
+            className="transition-transform duration-500 hover:rotate-180"
+          />
 
-          <LogOut size={20} />
-
-          {isOpen && <span>Logout</span>}
-
+          {isOpen && (
+            <span className="font-semibold">
+              Logout
+            </span>
+          )}
         </button>
-
       </div>
-
-
     </aside>
   );
 }

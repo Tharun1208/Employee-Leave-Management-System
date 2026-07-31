@@ -8,400 +8,416 @@ import {
   UserPlus,
   Mail,
   Phone,
-  Building2,
+  Building2
 } from "lucide-react";
 import Swal from "sweetalert2";
 import { registerUser } from "../../api/authApi";
 
 function Register() {
+
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [formData, setFormData] = useState({
+  const initialForm = {
     fullName: "",
     username: "",
     email: "",
     phone: "",
     department: "",
     password: "",
-    confirmPassword: "",
-  });
+    confirmPassword: ""
+  };
+
+  const [formData, setFormData] = useState(initialForm);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value
     });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    Swal.fire({
-      icon: "error",
-      title: "Passwords do not match",
-      text: "Please enter the same password in both fields.",
-      confirmButtonColor: "#2563eb",
-    });
-    return;
-  }
+    e.preventDefault();
 
-  try {
-    const response = await registerUser({
-      name: formData.fullName,
-      username: formData.username,
-      email: formData.email,
-      phone: formData.phone,
-      department: formData.department,
-      password: formData.password,
-      role: "employee",
-    });
+    if (formData.password !== formData.confirmPassword) {
 
-    await Swal.fire({
-      icon: "success",
-      title: "Registration Successful!",
-      text: response.data.message,
-      confirmButtonColor: "#2563eb",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+      Swal.fire({
+        icon: "error",
+        title: "Passwords do not match",
+        text: "Please enter the same password in both fields.",
+        confirmButtonColor: "#2563eb"
+      });
 
-    setFormData({
-      fullName: "",
-      username: "",
-      email: "",
-      phone: "",
-      department: "",
-      password: "",
-      confirmPassword: "",
-    });
+      return;
+    }
 
-    navigate("/login");
+    try {
 
-  } catch (err) {
-    Swal.fire({
-      icon: "error",
-      title: "Registration Failed",
-      text: err.response?.data?.message || "Something went wrong.",
-      confirmButtonColor: "#dc2626",
-    });
-  }
-};
+      const response = await registerUser({
+        name: formData.fullName,
+        username: formData.username,
+        email: formData.email,
+        phone: formData.phone,
+        department: formData.department,
+        password: formData.password,
+        role: "employee"
+      });
+
+      await Swal.fire({
+        icon: "success",
+        title: "Registration Successful!",
+        text: response.data.message,
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      setFormData(initialForm);
+
+      navigate("/login");
+
+    } catch (err) {
+
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: err.response?.data?.message || "Something went wrong.",
+        confirmButtonColor: "#dc2626"
+      });
+
+    }
+
+  };
+
+
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center px-4">
 
-      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2">
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-200 flex items-center justify-center px-4 py-6">
 
-        {/* Left Section */}
+      <div className="w-full max-w-4xl bg-white rounded-3xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 transition-all duration-500 hover:shadow-2xl">
 
-        <div className="hidden md:flex bg-blue-700 text-white flex-col items-center justify-center p-12">
+        <div className="hidden md:flex bg-gradient-to-br from-blue-700 to-indigo-700 text-white flex-col justify-center items-center p-8">
 
-          <UserPlus size={80} />
+          <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-md transition-all duration-300 hover:scale-110 hover:rotate-6">
 
-          <h1 className="text-4xl font-bold mt-6 text-center">
+            <UserPlus size={55}/>
+
+          </div>
+
+          <h1 className="text-3xl font-bold mt-5 text-center">
             Employee Leave
-            <br />
+          </h1>
+
+          <h1 className="text-3xl font-bold text-center">
             Management System
           </h1>
 
-          <p className="mt-6 text-blue-100 text-center leading-7">
-            Create your employee account and start managing
-            your leave requests quickly and securely.
+          <p className="mt-5 text-blue-100 text-center leading-6 max-w-sm">
+            Create your employee account and manage your leave requests securely.
           </p>
 
         </div>
 
-        {/* Right Section */}
 
-        <div className="p-10 overflow-y-auto">
+        <div className="p-5 sm:p-6 lg:p-7">
 
-          <h2 className="text-3xl font-bold text-center text-gray-800">
-            Create Account
-          </h2>
+          <div className="text-center">
 
-          <p className="text-center text-gray-500 mt-2">
-            Employee Registration
-          </p>
+            <h2 className="text-3xl font-bold text-slate-800">
+              Create Account
+            </h2>
+
+            <p className="text-gray-500 mt-1">
+              Employee Registration
+            </p>
+
+          </div>
+
 
           <form
             onSubmit={handleSubmit}
-            className="mt-8 space-y-5"
-          >{/* Full Name */}
-
-            <div>
-
-              <label className="block mb-2 font-medium">
+            autoComplete="off"
+            className="mt-5 space-y-3"
+          >
+                        <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Full Name
               </label>
 
               <div className="relative">
 
                 <User
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type="text"
                   name="fullName"
-                  placeholder="Enter Full Name"
+                  autoComplete="off"
+                  placeholder="Full Name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
               </div>
-
             </div>
 
-            {/* Username */}
 
             <div>
-
-              <label className="block mb-2 font-medium">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Username
               </label>
 
               <div className="relative">
 
                 <User
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type="text"
                   name="username"
-                  placeholder="Enter Username"
+                  autoComplete="off"
+                  placeholder="Username"
                   value={formData.username}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
               </div>
-
             </div>
 
-            {/* Email */}
 
             <div>
-
-              <label className="block mb-2 font-medium">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Email
               </label>
 
               <div className="relative">
 
                 <Mail
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type="email"
                   name="email"
-                  placeholder="Enter Email"
+                  autoComplete="off"
+                  placeholder="Email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
               </div>
-
             </div>
 
-            {/* Phone */}
 
             <div>
-
-              <label className="block mb-2 font-medium">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Phone Number
               </label>
 
               <div className="relative">
 
                 <Phone
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type="tel"
                   name="phone"
-                  placeholder="Enter Phone Number"
+                  autoComplete="off"
+                  placeholder="Phone Number"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
               </div>
-
             </div>
-            {/* Department */}
+
 
             <div>
-
-              <label className="block mb-2 font-medium">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Department
               </label>
 
               <div className="relative">
 
                 <Building2
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <select
                   name="department"
+                  autoComplete="off"
                   value={formData.department}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-3 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 >
-                  <option value="">Select Department</option>
+
+                  <option value="">
+                    Select Department
+                  </option>
+
                   <option value="Computer Science">
                     Computer Science
                   </option>
+
                   <option value="Information Science">
                     Information Science
                   </option>
+
                   <option value="Electronics">
                     Electronics
                   </option>
+
                   <option value="Mechanical">
                     Mechanical
                   </option>
+
                   <option value="Civil">
                     Civil
                   </option>
+
                 </select>
 
               </div>
-
             </div>
-
-            {/* Password */}
-
-            <div>
-
-              <label className="block mb-2 font-medium">
+                        <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Password
               </label>
 
               <div className="relative">
 
                 <Lock
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  placeholder="Enter Password"
+                  autoComplete="new-password"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-12 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-10 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-3.5"
+                  className="absolute right-3 top-3.5 text-gray-500 hover:text-blue-700 transition"
                 >
-                  {showPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
+                  {
+                    showPassword
+                      ? <EyeOff size={17}/>
+                      : <Eye size={17}/>
+                  }
                 </button>
 
               </div>
-
             </div>
 
-            {/* Confirm Password */}
 
             <div>
-
-              <label className="block mb-2 font-medium">
+              <label className="block text-sm font-semibold text-gray-700 mb-1">
                 Confirm Password
               </label>
 
               <div className="relative">
 
                 <Lock
-                  size={20}
-                  className="absolute left-4 top-3.5 text-gray-400"
+                  size={17}
+                  className="absolute left-3 top-3.5 text-gray-400"
                 />
 
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   name="confirmPassword"
+                  autoComplete="new-password"
                   placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full border rounded-xl py-3 pl-12 pr-12 focus:ring-2 focus:ring-blue-600 outline-none"
+                  className="w-full border rounded-xl pl-10 pr-10 py-2 transition-all duration-300 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
 
                 <button
                   type="button"
-                  onClick={() =>
-                    setShowConfirmPassword(!showConfirmPassword)
-                  }
-                  className="absolute right-4 top-3.5"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-3.5 text-gray-500 hover:text-blue-700 transition"
                 >
-                  {showConfirmPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
+                  {
+                    showConfirmPassword
+                      ? <EyeOff size={17}/>
+                      : <Eye size={17}/>
+                  }
                 </button>
 
               </div>
+            </div>
+
+
+            <div className="pt-5">
+
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white py-3 rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              >
+                Create Account
+              </button>
 
             </div>
 
-            {/* Register Button */}
 
-            <button
-              type="submit"
-              className="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-xl font-semibold transition"
-            >
-              Create Account
-            </button>
           </form>
 
-          {/* Login Link */}
 
-          <p className="text-center mt-8 text-gray-600">
-            Already have an account?
+          <div className="text-center mt-5">
 
-            <Link
-              to="/login"
-              className="text-blue-700 font-semibold ml-2 hover:underline"
-            >
-              Login
-            </Link>
+            <p className="text-gray-600">
 
-          </p>
+              Already have an account?
+
+              <Link
+                to="/login"
+                className="text-blue-700 font-semibold ml-2 hover:underline"
+              >
+                Login
+              </Link>
+
+            </p>
+
+          </div>
+
 
         </div>
 
       </div>
 
     </div>
+
   );
+
 }
 
 export default Register;

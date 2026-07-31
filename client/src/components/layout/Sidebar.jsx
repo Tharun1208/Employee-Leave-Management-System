@@ -6,147 +6,224 @@ import {
   Bell,
   User,
   LogOut,
-  Menu,
+  PanelLeft
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 function Sidebar() {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
+
+  const [isOpen, setIsOpen] = useState(
+    localStorage.getItem("employeeSidebar") !== "closed"
+  );
+
+  const [clickedIcon, setClickedIcon] = useState("");
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    localStorage.setItem(
+      "employeeSidebar",
+      !isOpen ? "open" : "closed"
+    );
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("employeeSidebar");
     navigate("/login");
   };
 
+  const animateIcon = (name) => {
+    setClickedIcon(name);
+
+    setTimeout(() => {
+      setClickedIcon("");
+    }, 600);
+  };
+
+  const menuItems = [
+    {
+      path: "/employee/dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard
+    },
+    {
+      path: "/employee/apply-leave",
+      label: "Apply Leave",
+      icon: CalendarPlus
+    },
+    {
+      path: "/employee/history",
+      label: "Leave History",
+      icon: ClipboardList
+    },
+    {
+      path: "/employee/notifications",
+      label: "Notifications",
+      icon: Bell
+    },
+    {
+      path: "/employee/profile",
+      label: "Profile",
+      icon: User
+    }
+  ];
+
   return (
     <aside
-      className={`${
-        isOpen ? "w-64" : "w-20"
-      } min-h-screen bg-blue-700 text-white shadow-lg flex flex-col transition-all duration-300`}
+      className={`
+      ${isOpen ? "w-64" : "w-20"}
+      min-h-screen
+      bg-gradient-to-b
+      from-blue-800
+      via-blue-700
+      to-indigo-800
+      text-white
+      shadow-2xl
+      flex
+      flex-col
+      transition-all
+      duration-500
+      ease-in-out
+      `}
     >
-
-      {/* Menu Header */}
-
       <div className="h-16 flex items-center px-4 border-b border-blue-600">
-
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-3 hover:bg-blue-600 px-3 py-2 rounded-lg transition w-full"
+          onClick={handleToggle}
+          className="
+          flex
+          items-center
+          gap-3
+          w-full
+          px-3
+          py-2
+          rounded-xl
+          hover:bg-white/10
+          transition-all
+          duration-300
+          "
         >
-          <Menu size={26} />
+          <PanelLeft
+            size={26}
+            className={`
+            transition-all
+            duration-500
+            ${!isOpen ? "rotate-180" : ""}
+            `}
+          />
 
-          {isOpen && (
-            <span className="text-lg font-semibold">
-              Menu
-            </span>
-          )}
-
+          {
+            isOpen &&
+            (
+              <span className="text-lg font-bold tracking-wide">
+                Menu
+              </span>
+            )
+          }
         </button>
-
       </div>
 
-      {/* Navigation */}
+      <nav className="mt-6 flex flex-col gap-3 px-3 flex-1">
+        {
+          menuItems.map((item) => {
 
-      <nav className="mt-6 flex flex-col gap-2 px-2 flex-1">
+            const Icon = item.icon;
 
-        <NavLink
-          to="/employee/dashboard"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <LayoutDashboard size={22} />
-          {isOpen && <span className="ml-3">Dashboard</span>}
-        </NavLink>
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={() => animateIcon(item.label)}
+                className={({isActive}) =>
+                  `
+                  flex
+                  items-center
+                  ${isOpen ? "px-4" : "justify-center"}
+                  py-3
+                  rounded-xl
+                  transition-all
+                  duration-300
+                  ${
+                    isActive
+                    ?
+                    "bg-white text-blue-700 shadow-lg font-semibold scale-105"
+                    :
+                    "hover:bg-white/10 hover:translate-x-1"
+                  }
+                  `
+                }
+              >
 
-        <NavLink
-          to="/employee/apply-leave"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <CalendarPlus size={22} />
-          {isOpen && <span className="ml-3">Apply Leave</span>}
-        </NavLink>
+                <Icon
+                  size={22}
+                  className={`
+                  transition-all
+                  duration-500
+                  ${
+                    clickedIcon === item.label
+                    ?
+                    "animate-bounce rotate-12 scale-125"
+                    :
+                    ""
+                  }
+                  `}
+                />
 
-        <NavLink
-          to="/employee/history"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <ClipboardList size={22} />
-          {isOpen && <span className="ml-3">Leave History</span>}
-        </NavLink>
+                {
+                  isOpen &&
+                  (
+                    <span className="ml-3 whitespace-nowrap">
+                      {item.label}
+                    </span>
+                  )
+                }
 
-        <NavLink
-          to="/employee/notifications"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <Bell size={22} />
-          {isOpen && <span className="ml-3">Notifications</span>}
-        </NavLink>
+              </NavLink>
+            );
 
-        <NavLink
-          to="/employee/profile"
-          className={({ isActive }) =>
-            `flex items-center ${
-              isOpen ? "px-4" : "justify-center"
-            } py-3 rounded-lg transition ${
-              isActive
-                ? "bg-white text-blue-700 font-semibold"
-                : "hover:bg-blue-600"
-            }`
-          }
-        >
-          <User size={22} />
-          {isOpen && <span className="ml-3">Profile</span>}
-        </NavLink>
-
+          })
+        }
       </nav>
 
-      {/* Logout */}
-
-      <div className="p-4">
-
+      <div className="p-4 border-t border-blue-600">
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center ${
-            isOpen ? "justify-center gap-2" : "justify-center"
-          } bg-red-600 hover:bg-red-700 py-3 rounded-xl transition`}
+          className="
+          w-full
+          flex
+          items-center
+          justify-center
+          gap-2
+          bg-red-600
+          hover:bg-red-700
+          hover:scale-105
+          py-3
+          rounded-xl
+          transition-all
+          duration-300
+          shadow-lg
+          "
         >
-          <LogOut size={20} />
-          {isOpen && <span>Logout</span>}
-        </button>
+          <LogOut
+            size={20}
+            className="
+            transition-transform
+            duration-500
+            hover:rotate-180
+            "
+          />
 
+          {
+            isOpen &&
+            (
+              <span className="font-semibold">
+                Logout
+              </span>
+            )
+          }
+
+        </button>
       </div>
 
     </aside>

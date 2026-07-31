@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
-import { Eye, X } from "lucide-react";
+import { Eye, X, History } from "lucide-react";
 import { toast } from "react-toastify";
 import { getMyLeaves } from "../../api/leaveApi";
 
 function LeaveHistory() {
+
   const [leaveHistory, setLeaveHistory] = useState([]);
   const [selectedLeave, setSelectedLeave] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,207 +27,495 @@ function LeaveHistory() {
   };
 
   const getStatusColor = (status) => {
-    if (status === "Approved")
+    if (status === "Approved") {
       return "bg-green-100 text-green-700";
+    }
 
-    if (status === "Rejected")
+    if (status === "Rejected") {
       return "bg-red-100 text-red-700";
+    }
 
     return "bg-yellow-100 text-yellow-700";
   };
 
   return (
-    <div className="flex bg-slate-100 min-h-screen">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-slate-100">
 
       <Sidebar />
 
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
 
         <Navbar />
 
-        <div className="p-8">
+        <main className="p-4 sm:p-6 lg:p-8">
 
-          <h1 className="text-3xl font-bold text-gray-800">
-            Leave History
-          </h1>
+          <div className="group bg-gradient-to-r from-blue-700 to-indigo-700 rounded-3xl p-5 sm:p-8 shadow-xl text-white mb-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-blue-500/40">
 
-          <p className="text-gray-500 mt-2">
-            View all your leave requests.
-          </p>
+            <div className="flex items-center justify-between gap-4">
 
-          <div className="bg-white rounded-2xl shadow-lg mt-8 overflow-hidden">
+              <div className="min-w-0">
+
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+                  Leave History
+                </h1>
+
+                <p className="mt-2 text-blue-100 text-sm sm:text-base lg:text-lg">
+                  Track all your leave requests and their current status.
+                </p>
+
+              </div>
+
+              <div className="hidden sm:flex w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-white/20 items-center justify-center backdrop-blur-sm transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
+
+                <History
+                  size={40}
+                  className="lg:w-[42px] lg:h-[42px]"
+                />
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
 
             {loading ? (
-              <div className="p-10 text-center text-gray-500">
+
+              <div className="p-12 text-center text-gray-500 text-lg">
                 Loading leave history...
               </div>
+
             ) : (
-              <table className="w-full">
 
-                <thead className="bg-blue-700 text-white">
-                  <tr>
-                    <th className="p-4 text-left">Leave Type</th>
-                    <th className="p-4 text-left">Start Date</th>
-                    <th className="p-4 text-left">End Date</th>
-                    <th className="p-4 text-left">Reason</th>
-                    <th className="p-4 text-left">Status</th>
-                    <th className="p-4 text-left">Remarks</th>
-                    <th className="p-4 text-center">View</th>
-                  </tr>
-                </thead>
+              <div className="overflow-x-auto">
 
-                <tbody>
-                  {leaveHistory.length > 0 ? (
-                    leaveHistory.map((leave) => (
-                      <tr
-                        key={leave.id}
-                        className="border-b hover:bg-gray-50"
-                      >
+                <table className="w-full min-w-[900px]">
 
-                        <td className="p-4">
-                          {leave.leave_type}
-                        </td>
+                  <thead className="bg-gradient-to-r from-blue-700 to-indigo-700 text-white">
 
-                        <td className="p-4">
-                          {new Date(leave.start_date).toLocaleDateString()}
-                        </td>
-
-                        <td className="p-4">
-                          {new Date(leave.end_date).toLocaleDateString()}
-                        </td>
-
-                        <td className="p-4">
-                          {leave.reason}
-                        </td>
-
-                        <td className="p-4">
-                          <span
-                            className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                              leave.status
-                            )}`}
-                          >
-                            {leave.status}
-                          </span>
-                        </td>
-
-                        <td className="p-4">
-                          {leave.status === "Pending"
-                            ? "Waiting for approval"
-                            : leave.status === "Approved"
-                            ? "Approved by Manager"
-                            : "Rejected by Manager"}
-                        </td>
-
-                        <td className="p-4 text-center">
-                          <button
-                            onClick={() => setSelectedLeave(leave)}
-                            className="text-blue-700 hover:text-blue-900"
-                          >
-                            <Eye size={22} />
-                          </button>
-                        </td>
-
-                      </tr>
-                    ))
-                  ) : (
                     <tr>
-                      <td
-                        colSpan="7"
-                        className="text-center p-8 text-gray-500"
-                      >
-                        No leave history found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
 
-              </table>
+                      <th className="p-4 text-left font-semibold">
+                        Leave Type
+                      </th>
+
+                      <th className="p-4 text-left font-semibold">
+                        Start Date
+                      </th>
+
+                      <th className="p-4 text-left font-semibold">
+                        End Date
+                      </th>
+
+                      <th className="p-4 text-left font-semibold">
+                        Reason
+                      </th>
+
+                      <th className="p-4 text-left font-semibold">
+                        Status
+                      </th>
+
+                      <th className="p-4 text-left font-semibold">
+                        Remarks
+                      </th>
+
+                      <th className="p-4 text-center font-semibold">
+                        View
+                      </th>
+
+                    </tr>
+
+                  </thead>
+                  <tbody>
+
+                    {
+                      leaveHistory.length > 0 ? (
+
+                        leaveHistory.map((leave) => (
+
+                          <tr
+                            key={leave.id}
+                            className="border-b hover:bg-blue-50 transition-all duration-300"
+                          >
+
+                            <td className="p-4 font-medium text-slate-700">
+
+                              {leave.leave_type}
+
+                            </td>
+
+
+                            <td className="p-4 text-gray-700">
+
+                              {new Date(
+                                leave.start_date
+                              ).toLocaleDateString()}
+
+                            </td>
+
+
+                            <td className="p-4 text-gray-700">
+
+                              {new Date(
+                                leave.end_date
+                              ).toLocaleDateString()}
+
+                            </td>
+
+
+                            <td className="p-4 max-w-xs break-words text-gray-700">
+
+                              {leave.reason}
+
+                            </td>
+
+
+                            <td className="p-4">
+
+                              <span
+                                className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(leave.status)}`}
+                              >
+
+                                {leave.status}
+
+                              </span>
+
+                            </td>
+
+
+                            <td className="p-4 text-gray-700">
+
+                              {
+                                leave.status === "Pending"
+                                  ? "Waiting for approval"
+                                  : leave.status === "Approved"
+                                    ? "Approved by Manager"
+                                    : "Rejected by Manager"
+                              }
+
+                            </td>
+
+
+                            <td className="p-4 text-center">
+
+                              <button
+
+                                onClick={() => setSelectedLeave(leave)}
+
+                                className="
+                                w-10
+                                h-10
+                                sm:w-11
+                                sm:h-11
+                                rounded-full
+                                bg-blue-100
+                                hover:bg-blue-700
+                                hover:text-white
+                                flex
+                                items-center
+                                justify-center
+                                mx-auto
+                                transition-all
+                                duration-300
+                                hover:scale-110
+                                "
+
+                              >
+
+                                <Eye size={20} />
+
+                              </button>
+
+                            </td>
+
+
+                          </tr>
+
+                        ))
+
+                      ) : (
+
+                        <tr>
+
+                          <td
+                            colSpan="7"
+                            className="
+                            text-center
+                            py-12
+                            text-gray-500
+                            text-lg
+                            "
+                          >
+
+                            No leave history found.
+
+                          </td>
+
+                        </tr>
+
+                      )
+                    }
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
             )}
 
           </div>
 
-        </div>
+        </main>
 
       </div>
 
-      {selectedLeave && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
 
-          <div className="bg-white w-[450px] rounded-2xl shadow-xl p-6">
+      {
+        selectedLeave && (
 
-            <div className="flex justify-between items-center mb-5">
+          <div
+            className="
+            fixed
+            inset-0
+            bg-black/50
+            backdrop-blur-sm
+            flex
+            items-center
+            justify-center
+            z-50
+            px-4
+            "
+          >
 
-              <h2 className="text-xl font-bold text-gray-800">
-                Leave Details
-              </h2>
+            <div
+              className="
+              bg-white
+              w-full
+              max-w-xl
+              max-h-[90vh]
+              rounded-3xl
+              shadow-2xl
+              overflow-hidden
+              flex
+              flex-col
+              "
+            >
 
-              <button
-                onClick={() => setSelectedLeave(null)}
-                className="text-gray-500 hover:text-red-600"
+
+              <div
+                className="
+                bg-gradient-to-r
+                from-blue-700
+                to-indigo-700
+                px-5
+                sm:px-8
+                py-5
+                flex
+                items-center
+                justify-between
+                "
               >
-                <X size={24} />
-              </button>
 
-            </div>
+                <h2 className="
+                text-xl
+                sm:text-2xl
+                font-bold
+                text-white
+                ">
+                  Leave Details
+                </h2>
 
-            <div className="space-y-4 text-gray-700">
 
-              <p>
-                <b>Leave Type:</b> {selectedLeave.leave_type}
-              </p>
+                <button
 
-              <p>
-                <b>Start Date:</b>{" "}
-                {new Date(selectedLeave.start_date).toLocaleDateString()}
-              </p>
+                  onClick={() => setSelectedLeave(null)}
 
-              <p>
-                <b>End Date:</b>{" "}
-                {new Date(selectedLeave.end_date).toLocaleDateString()}
-              </p>
+                  className="
+                  w-10
+                  h-10
+                  rounded-full
+                  flex
+                  items-center
+                  justify-center
+                  hover:bg-white/20
+                  transition-all
+                  "
 
-              <p>
-                <b>Reason:</b> {selectedLeave.reason}
-              </p>
-
-              <p>
-                <b>Status:</b>{" "}
-                <span
-                  className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                    selectedLeave.status
-                  )}`}
                 >
-                  {selectedLeave.status}
-                </span>
-              </p>
 
-              <p>
-                <b>Manager Remark:</b>{" "}
-                {selectedLeave.remarks || "No remarks available"}
-              </p>
+                  <X size={24} className="text-white" />
 
-              <p>
-                <b>Applied Date:</b>{" "}
-                {new Date(selectedLeave.created_at).toLocaleDateString()}
-              </p>
+                </button>
 
-            </div>
 
-            <div className="mt-6 text-right">
+              </div>
 
-              <button
-                onClick={() => setSelectedLeave(null)}
-                className="px-5 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
+
+              <div
+                className="
+                p-5
+                sm:p-8
+                space-y-5
+                overflow-y-auto
+                "
               >
-                Close
-              </button>
+
+                <div
+                  className="
+                  grid
+                  grid-cols-1
+                  sm:grid-cols-2
+                  gap-5
+                  "
+                >
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Leave Type
+                    </p>
+
+                    <p className="font-semibold text-slate-800">
+                      {selectedLeave.leave_type}
+                    </p>
+
+                  </div>
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Status
+                    </p>
+
+                    <span
+                      className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(selectedLeave.status)}`}
+                    >
+
+                      {selectedLeave.status}
+
+                    </span>
+
+                  </div>
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Start Date
+                    </p>
+
+                    <p className="font-semibold text-slate-800">
+                      {new Date(selectedLeave.start_date).toLocaleDateString()}
+                    </p>
+
+                  </div>
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      End Date
+                    </p>
+
+                    <p className="font-semibold text-slate-800">
+                      {new Date(selectedLeave.end_date).toLocaleDateString()}
+                    </p>
+
+                  </div>
+                  <div className="bg-slate-50 rounded-2xl border p-5 sm:col-span-2">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Leave Reason
+                    </p>
+
+                    <p className="text-slate-700 break-words">
+                      {selectedLeave.reason}
+                    </p>
+
+                  </div>
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5 sm:col-span-2">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Manager Remarks
+                    </p>
+
+                    <p className="text-slate-700 break-words">
+                      {selectedLeave.remarks || "No remarks available"}
+                    </p>
+
+                  </div>
+
+
+                  <div className="bg-slate-50 rounded-2xl border p-5 sm:col-span-2">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      Applied Date
+                    </p>
+
+                    <p className="text-slate-700">
+                      {new Date(
+                        selectedLeave.created_at
+                      ).toLocaleDateString()}
+                    </p>
+
+                  </div>
+
+
+                </div>
+
+
+                <div className="flex justify-end pt-2">
+
+                  <button
+
+                    onClick={() => setSelectedLeave(null)}
+
+                    className="
+                    w-full
+                    sm:w-auto
+                    bg-gradient-to-r
+                    from-blue-700
+                    to-indigo-700
+                    hover:from-blue-800
+                    hover:to-indigo-800
+                    text-white
+                    px-8
+                    py-3
+                    rounded-xl
+                    font-semibold
+                    shadow-lg
+                    hover:-translate-y-1
+                    transition-all
+                    duration-300
+                    "
+
+                  >
+
+                    Close
+
+                  </button>
+
+                </div>
+
+
+              </div>
+
 
             </div>
+
 
           </div>
 
-        </div>
-      )}
+        )
+      }
+
 
     </div>
   );
