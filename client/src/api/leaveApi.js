@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/leaves";
+const API = "https://employee-leave-management-system-ug86.onrender.com/api/leaves";
 
 const authHeader = () => ({
   headers:{

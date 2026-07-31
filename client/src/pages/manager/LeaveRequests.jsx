@@ -170,7 +170,7 @@ function LeaveRequests() {
                         <td className="px-4 py-4 text-center">
                           {request.document ? (
                             <a
-                              href={`http://localhost:5000/uploads/${request.document}`}
+                              href={`https://employee-leave-management-system-ug86.onrender.com/uploads/${request.document}`}
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-md transition hover:scale-105"
