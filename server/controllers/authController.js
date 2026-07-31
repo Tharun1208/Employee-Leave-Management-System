@@ -45,7 +45,7 @@ exports.register = async (req, res) => {
                     password,
                     role
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?)
             `;
 
             db.query(
@@ -70,11 +70,13 @@ exports.register = async (req, res) => {
                     const prefix = userRole === "manager" ? "MGR" : "EMP";
 
                     db.query(
-                        `SELECT employee_id
-                         FROM users
-                         WHERE role = ?
-                         ORDER BY employee_id DESC
-                         LIMIT 1`,
+                        `
+                        SELECT employee_id
+                        FROM users
+                        WHERE role = ?
+                        ORDER BY id DESC
+                        LIMIT 1
+                        `,
                         [userRole],
                         (err, rows) => {
                             if (err) {
@@ -92,15 +94,23 @@ exports.register = async (req, res) => {
                                 nextNumber = lastNumber + 1;
                             }
 
-                            const employeeId = prefix + String(nextNumber).padStart(3, "0");
+                            const employeeId =
+                                prefix + String(nextNumber).padStart(3, "0");
 
                             db.query(
-                                "UPDATE users SET employee_id = ? WHERE id = ?",
-                                [employeeId, result.insertId],
+                                `
+                                UPDATE users
+                                SET employee_id = ?
+                                WHERE id = ?
+                                `,
+                                [
+                                    employeeId,
+                                    result.insertId
+                                ],
                                 (err) => {
                                     if (err) {
                                         return res.status(500).json({
-                                            message: "Employee ID generation failed",
+                                            message: "Employee ID update failed",
                                             error: err
                                         });
                                     }
@@ -125,7 +135,10 @@ exports.register = async (req, res) => {
 };
 
 exports.login = (req, res) => {
-    const { email, password } = req.body;
+    const {
+        email,
+        password
+    } = req.body;
 
     const sql = `
         SELECT *
@@ -133,53 +146,60 @@ exports.login = (req, res) => {
         WHERE email = ?
     `;
 
-    db.query(sql, [email], async (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                message: "Database Error",
-                error: err
-            });
-        }
-
-        if (result.length === 0) {
-            return res.status(404).json({
-                message: "User not found"
-            });
-        }
-
-        const user = result[0];
-
-        const match = await bcrypt.compare(password, user.password);
-
-        if (!match) {
-            return res.status(401).json({
-                message: "Invalid password"
-            });
-        }
-
-        const token = jwt.sign(
-            {
-                id: user.id,
-                role: user.role
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "1d"
+    db.query(
+        sql,
+        [email],
+        async (err, result) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Database Error",
+                    error: err
+                });
             }
-        );
 
-        res.status(200).json({
-            message: "Login successful",
-            token,
-            user: {
-                id: user.id,
-                employee_id: user.employee_id,
-                name: user.name,
-                                email: user.email,
-                phone: user.phone,
-                department: user.department,
-                role: user.role
+            if (result.length === 0) {
+                return res.status(404).json({
+                    message: "User not found"
+                });
             }
-        });
-    });
+
+            const user = result[0];
+
+            const match = await bcrypt.compare(
+                password,
+                user.password
+            );
+
+            if (!match) {
+                return res.status(401).json({
+                    message: "Invalid password"
+                });
+            }
+
+            const token = jwt.sign(
+                {
+                    id: user.id,
+                    role: user.role
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "1d"
+                }
+            );
+
+            res.status(200).json({
+                message: "Login successful",
+                token,
+                user: {
+                    id: user.id,
+                    employee_id: user.employee_id,
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    department: user.department,
+                    role: user.role
+                }
+            });
+        }
+    );
 };
