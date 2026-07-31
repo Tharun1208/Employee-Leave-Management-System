@@ -32,8 +32,12 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("Login Data:", formData);
+
     try {
       const res = await loginUser(formData);
+
+      console.log("Login Response:", res.data);
 
       localStorage.setItem(
         "token",
@@ -56,10 +60,14 @@ function Login() {
       }, 1000);
 
     } catch (err) {
+
+      console.log("Login Error:", err.response?.data);
+
       toast.error(
         err.response?.data?.message ||
         "Invalid Email or Password"
       );
+
     }
   };
 
@@ -78,10 +86,7 @@ function Login() {
 
             <div className="w-32 h-32 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center mx-auto shadow-xl animate-pulse">
 
-              <CalendarDays
-                size={80}
-                className="text-white"
-              />
+              <CalendarDays size={80} />
 
             </div>
 
@@ -100,6 +105,8 @@ function Login() {
           </div>
 
         </div>
+
+
         <div className="p-6 sm:p-8 md:p-10 lg:p-14">
 
           <div className="text-center">
@@ -114,6 +121,7 @@ function Login() {
 
           </div>
 
+
           <form
             onSubmit={handleSubmit}
             className="mt-8 sm:mt-10 space-y-6 sm:space-y-7"
@@ -125,11 +133,11 @@ function Login() {
                 Email
               </label>
 
-              <div className="relative group">
+              <div className="relative">
 
                 <User
                   size={21}
-                  className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-blue-700 transition"
+                  className="absolute left-4 top-3.5 text-gray-400"
                 />
 
                 <input
@@ -139,7 +147,7 @@ function Login() {
                   value={formData.email}
                   onChange={handleChange}
                   autoComplete="off"
-                  className="w-full border border-gray-300 rounded-xl pl-12 pr-4 py-3.5 outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 hover:border-blue-400"
+                  className="w-full border border-gray-300 rounded-xl pl-12 pr-4 py-3.5 outline-none focus:ring-2 focus:ring-blue-600"
                   required
                 />
 
@@ -154,11 +162,11 @@ function Login() {
                 Password
               </label>
 
-              <div className="relative group">
+              <div className="relative">
 
                 <Lock
                   size={21}
-                  className="absolute left-4 top-3.5 text-gray-400 group-focus-within:text-blue-700 transition"
+                  className="absolute left-4 top-3.5 text-gray-400"
                 />
 
                 <input
@@ -168,22 +176,20 @@ function Login() {
                   value={formData.password}
                   onChange={handleChange}
                   autoComplete="new-password"
-                  className="w-full border border-gray-300 rounded-xl pl-12 pr-12 py-3.5 outline-none transition-all duration-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 hover:border-blue-400"
+                  className="w-full border border-gray-300 rounded-xl pl-12 pr-12 py-3.5 outline-none focus:ring-2 focus:ring-blue-600"
                   required
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-3.5 text-gray-500 hover:text-blue-700 transition"
+                  className="absolute right-4 top-3.5 text-gray-500"
                 >
 
                   {
                     showPassword
-                      ?
-                      <EyeOff size={21} />
-                      :
-                      <Eye size={21} />
+                    ? <EyeOff size={21}/>
+                    : <Eye size={21}/>
                   }
 
                 </button>
@@ -195,12 +201,15 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 hover:from-blue-800 hover:to-indigo-900 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg hover:shadow-blue-400/50 hover:-translate-y-1 active:scale-95 transition-all duration-300"
+              className="w-full bg-gradient-to-r from-blue-700 to-indigo-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg"
             >
               Login
             </button>
 
+
           </form>
+
+
           <div className="text-center mt-8">
 
             <p className="text-gray-600">
@@ -218,13 +227,13 @@ function Login() {
 
           </div>
 
+
         </div>
 
       </div>
 
     </div>
   );
-
 }
 
 export default Login;
