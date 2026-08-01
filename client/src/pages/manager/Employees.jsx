@@ -23,7 +23,6 @@ function Employees() {
   const fetchEmployees = async () => {
     try {
       const res = await getEmployees();
-      console.log(res.data);
       setEmployees(res.data);
     } catch (error) {
       toast.error("Failed to load employees");
@@ -62,7 +61,7 @@ function Employees() {
       toast.error("Update failed");
     }
   };
-  
+
   const handleDelete = async (id) => {
     const result = await Swal.fire({
       title: "Delete Employee?",
