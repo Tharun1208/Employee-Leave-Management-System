@@ -71,12 +71,13 @@ exports.register = async (req, res) => {
 
                     db.query(
                         `
-                        SELECT employee_id
-                        FROM users
-                        WHERE role = ?
-                        ORDER BY id DESC
-                        LIMIT 1
-                        `,
+    SELECT employee_id
+    FROM users
+    WHERE role = ?
+      AND employee_id IS NOT NULL
+    ORDER BY id DESC
+    LIMIT 1
+    `,
                         [userRole],
                         (err, rows) => {
                             if (err) {
