@@ -1,44 +1,34 @@
 const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinary");
-const path = require("path");
 
 const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
+    cloudinary,
+    params: async (req, file) => ({
         folder: "employee-leave-documents",
         resource_type: "auto",
-        allowed_formats: [
-            "pdf",
-            "jpg",
-            "jpeg",
-            "png"
-        ],
-        public_id: (req, file) => {
-            return Date.now() + path.parse(file.originalname).name;
-        }
-    }
+        public_id: Date.now() + "-" + file.originalname
+    })
 });
 
 const upload = multer({
-    storage: storage,
+    storage,
     limits: {
         fileSize: 5 * 1024 * 1024
     },
-    fileFilter: function (req, file, cb) {
-        const allowedFiles = [
-            ".pdf",
-            ".jpg",
-            ".jpeg",
-            ".png"
+    fileFilter(req, file, cb) {
+
+        const allowed = [
+            "application/pdf",
+            "image/jpeg",
+            "image/png",
+            "image/jpg"
         ];
 
-        const extension = path.extname(file.originalname).toLowerCase();
-
-        if (allowedFiles.includes(extension)) {
+        if (allowed.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error("Only PDF, JPG, JPEG and PNG files allowed"));
+            cb(new Error("Only PDF, JPG and PNG files are allowed"));
         }
     }
 });
