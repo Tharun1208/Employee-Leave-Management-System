@@ -2,9 +2,14 @@ const db = require("../config/db");
 
 const applyLeave = (req, res) => {
     console.log("========== APPLY LEAVE ==========");
-    console.log("BODY:", req.body);
-    console.log("USER:", req.user);
-    console.log("FILE:", req.file);
+    console.log("BODY");
+    console.dir(req.body, { depth: null });
+
+    console.log("USER");
+    console.dir(req.user, { depth: null });
+
+    console.log("FILE");
+    console.dir(req.file, { depth: null });
 
     const {
         leave_type,
