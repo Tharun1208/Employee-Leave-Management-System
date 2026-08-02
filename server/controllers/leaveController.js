@@ -1,6 +1,11 @@
 const db = require("../config/db");
 
 const applyLeave = (req, res) => {
+    console.log("========== APPLY LEAVE ==========");
+    console.log("BODY:", req.body);
+    console.log("USER:", req.user);
+    console.log("FILE:", req.file);
+
     const {
         leave_type,
         reason,
@@ -15,6 +20,8 @@ const applyLeave = (req, res) => {
     if (req.file) {
         document = req.file.path;
     }
+
+    console.log("DOCUMENT:", document);
 
     db.query(
         `
@@ -40,11 +47,14 @@ const applyLeave = (req, res) => {
         ],
         (err, result) => {
             if (err) {
+                console.log("MYSQL INSERT ERROR:", err);
                 return res.status(500).json({
                     message: "Leave application failed",
                     error: err
                 });
             }
+
+            console.log("LEAVE INSERTED SUCCESSFULLY");
 
             db.query(
                 `
@@ -58,7 +68,14 @@ const applyLeave = (req, res) => {
                 [
                     2,
                     "New leave request submitted by employee."
-                ]
+                ],
+                (err) => {
+                    if (err) {
+                        console.log("NOTIFICATION ERROR:", err);
+                    } else {
+                        console.log("NOTIFICATION INSERTED");
+                    }
+                }
             );
 
             res.status(200).json({
@@ -91,6 +108,7 @@ const getMyLeaves = (req, res) => {
         [user_id],
         (err, result) => {
             if (err) {
+                console.log("GET MY LEAVES ERROR:", err);
                 return res.status(500).json({
                     message: "Failed to fetch leaves"
                 });
@@ -123,6 +141,7 @@ const getAllLeaves = (req, res) => {
         `,
         (err, result) => {
             if (err) {
+                console.log("GET ALL LEAVES ERROR:", err);
                 return res.status(500).json({
                     message: "Failed to fetch leaves"
                 });
@@ -146,6 +165,7 @@ const approveLeave = (req, res) => {
         [leaveId],
         (err, result) => {
             if (err) {
+                console.log(err);
                 return res.status(500).json(err);
             }
 
@@ -154,9 +174,9 @@ const approveLeave = (req, res) => {
             db.query(
                 `
                 UPDATE leaves
-                SET status = 'Approved',
-                remarks = ?
-                WHERE id = ?
+                SET status='Approved',
+                remarks=?
+                WHERE id=?
                 `,
                 [
                     remarks,
@@ -164,6 +184,7 @@ const approveLeave = (req, res) => {
                 ],
                 (err) => {
                     if (err) {
+                        console.log(err);
                         return res.status(500).json(err);
                     }
 
@@ -204,6 +225,7 @@ const rejectLeave = (req, res) => {
         [leaveId],
         (err, result) => {
             if (err) {
+                console.log(err);
                 return res.status(500).json(err);
             }
 
@@ -212,9 +234,9 @@ const rejectLeave = (req, res) => {
             db.query(
                 `
                 UPDATE leaves
-                SET status = 'Rejected',
-                remarks = ?
-                WHERE id = ?
+                SET status='Rejected',
+                remarks=?
+                WHERE id=?
                 `,
                 [
                     remarks,
@@ -222,6 +244,7 @@ const rejectLeave = (req, res) => {
                 ],
                 (err) => {
                     if (err) {
+                        console.log(err);
                         return res.status(500).json(err);
                     }
 
