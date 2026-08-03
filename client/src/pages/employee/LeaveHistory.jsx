@@ -322,19 +322,6 @@ function LeaveHistory() {
                   </p>
 
                 </div>
-
-                {selectedLeave.document && (
-
-                  <div className="bg-slate-50 rounded-2xl border p-5 md:col-span-2">
-
-                    <p className="text-sm text-gray-500 mb-3">
-                      Supporting Document
-                    </p>
-
-                  </div>
-
-                )}
-
                 <div className="bg-slate-50 rounded-2xl border p-5 md:col-span-2">
 
                   <p className="text-sm text-gray-500 mb-2">
