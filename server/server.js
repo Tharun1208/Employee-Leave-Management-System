@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
 require("dotenv").config();
 
 require("./config/db");
@@ -18,7 +19,10 @@ app.use(express.json());
 
 
 // Serve uploaded documents
-app.use("/uploads", express.static("uploads"));
+app.use(
+    "/uploads",
+    express.static("uploads")
+);
 
 
 // Routes
@@ -34,26 +38,56 @@ app.get("/", (req, res) => {
 });
 
 
-// ==========================
-// Global Error Handler
-// ==========================
-app.use((err, req, res, next) => {
+// Check uploaded files (temporary testing)
+app.get("/check-upload", (req, res) => {
 
-    console.error("========== ERROR ==========");
-    console.error(err);
+    const uploadPath = "./uploads";
 
-    res.status(err.status || 500).json({
-        success:false,
-        message:err.message,
-        stack:err.stack
+    if (!fs.existsSync(uploadPath)) {
+
+        return res.json({
+            success:false,
+            message:"Uploads folder not found"
+        });
+
+    }
+
+
+    const files = fs.readdirSync(uploadPath);
+
+
+    res.json({
+        success:true,
+        files:files
     });
 
 });
 
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+
+    console.error("========== ERROR ==========");
+    console.error(err);
+
+
+    res.status(err.status || 500).json({
+
+        success:false,
+        message:err.message,
+        stack:err.stack
+
+    });
+
+});
+
+
+// Server Port
 const PORT = process.env.PORT || 5000;
 
 
 app.listen(PORT, () => {
+
     console.log(`Server running on port ${PORT}`);
+
 });
