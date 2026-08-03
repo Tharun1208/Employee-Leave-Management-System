@@ -23,6 +23,20 @@ app.get("/", (req, res) => {
     res.send("Employee Leave System Backend Running");
 });
 
+// ==========================
+// Global Error Handler
+// ==========================
+app.use((err, req, res, next) => {
+    console.error("========== ERROR ==========");
+    console.error(err);
+
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message,
+        stack: err.stack
+    });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
