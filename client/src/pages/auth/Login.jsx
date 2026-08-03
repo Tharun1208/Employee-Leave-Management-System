@@ -199,7 +199,10 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-700 to-indigo-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg"
+              className="w-full bg-gradient-to-r from-blue-700 to-indigo-700 text-white py-3.5 rounded-xl font-bold text-lg shadow-lg 
+             hover:from-blue-800 hover:to-indigo-800 
+             hover:shadow-xl hover:scale-[1.02] 
+             transition-all duration-300 ease-in-out"
             >
               Login
             </button>
