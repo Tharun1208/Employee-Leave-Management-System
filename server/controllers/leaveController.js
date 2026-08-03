@@ -14,9 +14,7 @@ const applyLeave = async (req, res) => {
         let document = null;
 
         if (req.file) {
-            document = path
-                .join("uploads", req.file.filename)
-                .replace(/\\/g, "/");
+            document = req.file.filename;
 
             console.log("Local Upload Success:", document);
         }
