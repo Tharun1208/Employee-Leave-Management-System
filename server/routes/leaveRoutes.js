@@ -25,7 +25,7 @@ const {
 router.post(
     "/apply",
     verifyToken,
-    upload.single("document"),
+    upload.singleWithError("document"),
     applyLeave
 );
 
