@@ -4,32 +4,22 @@ const cloudinary = require("../config/cloudinary");
 
 const storage = new CloudinaryStorage({
     cloudinary,
-    params: async (req, file) => ({
-        folder: "employee-leave-documents",
-        resource_type: "auto",
-        public_id: Date.now() + "-" + file.originalname
-    })
+    params: async (req, file) => {
+        console.log("Uploading:", file.originalname);
+        console.log("Mime Type:", file.mimetype);
+
+        return {
+            folder: "employee-leave-documents",
+            resource_type: "raw",
+            public_id: Date.now().toString()
+        };
+    }
 });
 
 const upload = multer({
     storage,
     limits: {
         fileSize: 5 * 1024 * 1024
-    },
-    fileFilter(req, file, cb) {
-
-        const allowed = [
-            "application/pdf",
-            "image/jpeg",
-            "image/png",
-            "image/jpg"
-        ];
-
-        if (allowed.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error("Only PDF, JPG and PNG files are allowed"));
-        }
     }
 });
 
