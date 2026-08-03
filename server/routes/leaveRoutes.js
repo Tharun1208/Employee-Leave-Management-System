@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
 const upload = require("../middleware/upload");
-
 const {
     verifyToken,
     verifyManager
 } = require("../middleware/authMiddleware");
-
 const {
     applyLeave,
     getMyLeaves,
@@ -16,32 +13,19 @@ const {
     rejectLeave
 } = require("../controllers/leaveController");
 
-
-// =============================
-// Employee
-// =============================
-
-// Apply Leave
 router.post(
     "/apply",
     verifyToken,
-    upload.singleWithError("document"),
+    upload.single("document"),
     applyLeave
 );
 
-// View My Leaves
 router.get(
     "/my-leaves",
     verifyToken,
     getMyLeaves
 );
 
-
-// =============================
-// Manager
-// =============================
-
-// View All Leave Requests
 router.get(
     "/all",
     verifyToken,
@@ -49,7 +33,6 @@ router.get(
     getAllLeaves
 );
 
-// Approve Leave
 router.put(
     "/approve/:id",
     verifyToken,
@@ -57,7 +40,6 @@ router.put(
     approveLeave
 );
 
-// Reject Leave
 router.put(
     "/reject/:id",
     verifyToken,

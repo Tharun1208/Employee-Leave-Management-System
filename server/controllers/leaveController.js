@@ -1,32 +1,37 @@
 const db = require("../config/db");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
 
-// ===============================
-// Apply Leave
-// ===============================
-const applyLeave = (req, res) => {
+const applyLeave = async (req, res) => {
+    try {
+        console.log("========== APPLY LEAVE ==========");
+        console.log("BODY:", req.body);
+        console.log("USER:", req.user);
+        console.log("FILE:", req.file);
 
-    console.log("========== APPLY LEAVE ==========");
-    console.log("BODY:", req.body);
-    console.log("USER:", req.user);
-    console.log("FILE:", req.file);
+        const { leave_type, reason, start_date, end_date } = req.body;
+        const user_id = req.user.id;
+        let document = null;
 
-    const {
-        leave_type,
-        reason,
-        start_date,
-        end_date
-    } = req.body;
+        if (req.file) {
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: "employee-leave-documents",
+                        resource_type: "auto"
+                    },
+                    (error, result) => {
+                        if (error) return reject(error);
+                        resolve(result);
+                    }
+                );
+                streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+            });
+            document = result.secure_url;
+            console.log("Cloudinary Upload Success:", document);
+        }
 
-    const user_id = req.user.id;
-
-    let document = null;
-
-    if (req.file) {
-        // Cloudinary URL
-        document = req.file.path;
-    }
-
-    const sql = `
+        const sql = `
         INSERT INTO leaves
         (
             user_id,
@@ -41,69 +46,66 @@ const applyLeave = (req, res) => {
         (
             ?, ?, ?, ?, ?, ?, 'Pending'
         )
-    `;
+        `;
 
-    db.query(
-        sql,
-        [
-            user_id,
-            leave_type,
-            reason,
-            start_date,
-            end_date,
-            document
-        ],
-        (err) => {
+        db.query(
+            sql,
+            [
+                user_id,
+                leave_type,
+                reason,
+                start_date,
+                end_date,
+                document
+            ],
+            (err) => {
+                if (err) {
+                    console.error("Leave Insert Error:", err);
+                    return res.status(500).json({
+                        success: false,
+                        message: "Failed to apply leave",
+                        error: err.message
+                    });
+                }
 
-            if (err) {
-                console.error("Leave Insert Error:", err);
+                db.query(
+                    `
+                    INSERT INTO notifications
+                    (
+                        user_id,
+                        message
+                    )
+                    VALUES (?, ?)
+                    `,
+                    [
+                        2,
+                        "New leave request submitted."
+                    ],
+                    (notifyErr) => {
+                        if (notifyErr) {
+                            console.error("Notification Error:", notifyErr);
+                        }
+                    }
+                );
 
-                return res.status(500).json({
-                    message: "Failed to apply leave",
-                    error: err.message
+                return res.status(201).json({
+                    success: true,
+                    message: "Leave applied successfully",
+                    document
                 });
             }
-
-            db.query(
-                `
-                INSERT INTO notifications
-                (
-                    user_id,
-                    message
-                )
-                VALUES (?, ?)
-                `,
-                [
-                    2,
-                    "New leave request submitted."
-                ],
-                (notifyErr) => {
-
-                    if (notifyErr) {
-                        console.error("Notification Error:", notifyErr);
-                    }
-
-                }
-            );
-
-            return res.status(201).json({
-                success: true,
-                message: "Leave applied successfully",
-                document
-            });
-
-        }
-    );
-
+        );
+    } catch (err) {
+        console.error("Cloudinary Upload Error:", err);
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
 };
 
-// ===============================
-// Employee Leaves
-// ===============================
 const getMyLeaves = (req, res) => {
-
     const user_id = req.user.id;
-
     db.query(
         `
         SELECT
@@ -122,27 +124,18 @@ const getMyLeaves = (req, res) => {
         `,
         [user_id],
         (err, result) => {
-
             if (err) {
                 console.error(err);
-
                 return res.status(500).json({
                     message: "Failed to fetch leaves"
                 });
             }
-
             res.json(result);
-
         }
     );
-
 };
 
-// ===============================
-// Manager Leaves
-// ===============================
 const getAllLeaves = (req, res) => {
-
     db.query(
         `
         SELECT
@@ -165,27 +158,18 @@ const getAllLeaves = (req, res) => {
         ORDER BY leaves.created_at DESC
         `,
         (err, result) => {
-
             if (err) {
                 console.error(err);
-
                 return res.status(500).json({
                     message: "Failed to fetch leaves"
                 });
             }
-
             res.json(result);
-
         }
     );
-
 };
 
-// ===============================
-// Approve Leave
-// ===============================
 const approveLeave = (req, res) => {
-
     const leaveId = req.params.id;
     const { remarks } = req.body;
 
@@ -193,7 +177,6 @@ const approveLeave = (req, res) => {
         "SELECT user_id FROM leaves WHERE id=?",
         [leaveId],
         (err, result) => {
-
             if (err) {
                 return res.status(500).json(err);
             }
@@ -203,9 +186,7 @@ const approveLeave = (req, res) => {
             db.query(
                 `
                 UPDATE leaves
-                SET
-                    status='Approved',
-                    remarks=?
+                SET status='Approved',remarks=?
                 WHERE id=?
                 `,
                 [
@@ -213,7 +194,6 @@ const approveLeave = (req, res) => {
                     leaveId
                 ],
                 (err) => {
-
                     if (err) {
                         return res.status(500).json(err);
                     }
@@ -236,20 +216,13 @@ const approveLeave = (req, res) => {
                     res.json({
                         message: "Leave Approved Successfully"
                     });
-
                 }
             );
-
         }
     );
-
 };
 
-// ===============================
-// Reject Leave
-// ===============================
 const rejectLeave = (req, res) => {
-
     const leaveId = req.params.id;
     const { remarks } = req.body;
 
@@ -257,7 +230,6 @@ const rejectLeave = (req, res) => {
         "SELECT user_id FROM leaves WHERE id=?",
         [leaveId],
         (err, result) => {
-
             if (err) {
                 return res.status(500).json(err);
             }
@@ -267,9 +239,7 @@ const rejectLeave = (req, res) => {
             db.query(
                 `
                 UPDATE leaves
-                SET
-                    status='Rejected',
-                    remarks=?
+                SET status='Rejected',remarks=?
                 WHERE id=?
                 `,
                 [
@@ -277,7 +247,6 @@ const rejectLeave = (req, res) => {
                     leaveId
                 ],
                 (err) => {
-
                     if (err) {
                         return res.status(500).json(err);
                     }
@@ -300,13 +269,10 @@ const rejectLeave = (req, res) => {
                     res.json({
                         message: "Leave Rejected Successfully"
                     });
-
                 }
             );
-
         }
     );
-
 };
 
 module.exports = {
