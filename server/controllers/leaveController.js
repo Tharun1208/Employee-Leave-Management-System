@@ -1,5 +1,6 @@
 const db = require("../config/db");
-const path = require("path");
+const fs = require("fs");
+const supabase = require("../config/supabase");
 
 const applyLeave = async (req, res) => {
     try {
@@ -13,11 +14,44 @@ const applyLeave = async (req, res) => {
 
         let document = null;
 
-        if (req.file) {
-            document = req.file.filename;
+if (req.file) {
 
-            console.log("Local Upload Success:", document);
-        }
+    const filePath = req.file.path;
+
+    const fileName =
+        Date.now() + "-" + req.file.originalname;
+
+    const fileBuffer = fs.readFileSync(filePath);
+
+    const { error } = await supabase.storage
+        .from(process.env.SUPABASE_BUCKET)
+        .upload(fileName, fileBuffer, {
+            contentType: req.file.mimetype,
+            upsert: false
+        });
+
+    if (error) {
+
+        console.error("Supabase Upload Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Document upload failed"
+        });
+
+    }
+
+    const { data } = supabase.storage
+        .from(process.env.SUPABASE_BUCKET)
+        .getPublicUrl(fileName);
+
+    document = data.publicUrl;
+
+    fs.unlinkSync(filePath);
+
+    console.log("Supabase Upload Success:", document);
+
+}
 
         const sql = `
         INSERT INTO leaves
