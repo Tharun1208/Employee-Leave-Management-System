@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import {
   CalendarPlus,
   ClipboardList,
@@ -11,6 +12,10 @@ import {
 import Navbar from "../../components/layout/Navbar";
 import Sidebar from "../../components/layout/Sidebar";
 import { getMyLeaves } from "../../api/leaveApi";
+import {
+  getNotifications,
+  markNotificationRead
+} from "../../api/notificationApi";
 
 function Dashboard() {
 
@@ -18,6 +23,7 @@ function Dashboard() {
 
   useEffect(() => {
     fetchLeaves();
+    checkNotifications();
   }, []);
 
   const fetchLeaves = async () => {
@@ -28,7 +34,40 @@ function Dashboard() {
 
     }
   };
+  const checkNotifications = async () => {
+    try {
+      const res = await getNotifications();
 
+      const unread = res.data.filter(
+        notification => notification.is_read === 0
+      );
+
+      if (unread.length > 0) {
+
+        const latest = unread[0];
+
+        await Swal.fire({
+          title: "Leave Notification",
+          text: latest.message,
+          icon: latest.message.toLowerCase().includes("approved")
+            ? "success"
+            : latest.message.toLowerCase().includes("rejected")
+              ? "error"
+              : "info",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#2563eb"
+        });
+
+        for (const notification of unread) {
+          await markNotificationRead(notification.id);
+        }
+
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const getStatusColor = (status) => {
     if (status === "Approved") {
       return "bg-green-100 text-green-700";
