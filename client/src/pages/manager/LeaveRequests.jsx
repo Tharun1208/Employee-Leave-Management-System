@@ -90,7 +90,7 @@ function LeaveRequests() {
               <ClipboardList size={40} />
             </div>
           </div>
-                    <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
             <div className="bg-gradient-to-r from-blue-700 to-indigo-900 px-5 sm:px-8 py-5 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex items-center gap-3">
                 <ClipboardList size={25} />
@@ -170,7 +170,11 @@ function LeaveRequests() {
                         <td className="px-4 py-4 text-center">
                           {request.document ? (
                             <a
-                              href={`https://employee-leave-management-system-ug86.onrender.com/uploads/${request.document}`}
+                              href={
+                                request.document.startsWith("http")
+                                  ? request.document
+                                  : `https://employee-leave-management-system-ug86.onrender.com/uploads/${request.document}`
+                              }
                               target="_blank"
                               rel="noreferrer"
                               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-md transition hover:scale-105"
@@ -179,20 +183,17 @@ function LeaveRequests() {
                               View
                             </a>
                           ) : (
-                            <span className="text-gray-500">
-                              No File
-                            </span>
+                            <span className="text-gray-400">No Document</span>
                           )}
                         </td>
                         <td className="px-4 py-4 text-center">
                           <span
-                            className={`px-4 py-1.5 rounded-full text-sm font-semibold ${
-                              request.status === "Approved"
+                            className={`px-4 py-1.5 rounded-full text-sm font-semibold ${request.status === "Approved"
                                 ? "bg-green-100 text-green-700"
                                 : request.status === "Rejected"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}
+                                  ? "bg-red-100 text-red-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                              }`}
                           >
                             {request.status}
                           </span>
@@ -244,7 +245,7 @@ function LeaveRequests() {
               </table>
             </div>
           </div>
-                  </main>
+        </main>
       </div>
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
@@ -276,11 +277,10 @@ function LeaveRequests() {
               </button>
               <button
                 onClick={submitAction}
-                className={`px-5 py-2.5 rounded-xl text-white font-semibold transition ${
-                  actionType === "Approved"
+                className={`px-5 py-2.5 rounded-xl text-white font-semibold transition ${actionType === "Approved"
                     ? "bg-green-600 hover:bg-green-700"
                     : "bg-red-600 hover:bg-red-700"
-                }`}
+                  }`}
               >
                 {actionType}
               </button>
