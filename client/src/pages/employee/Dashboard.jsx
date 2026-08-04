@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 import {
   CalendarPlus,
   ClipboardList,
@@ -35,39 +35,32 @@ function Dashboard() {
     }
   };
   const checkNotifications = async () => {
-    try {
-      const res = await getNotifications();
+  try {
+    const res = await getNotifications();
 
-      const unread = res.data.filter(
-        notification => notification.is_read === 0
-      );
+    const unread = res.data.filter(
+      notification => notification.is_read === 0
+    );
 
-      if (unread.length > 0) {
+    unread.forEach(async (notification) => {
 
-        const latest = unread[0];
-
-        await Swal.fire({
-          title: "Leave Notification",
-          text: latest.message,
-          icon: latest.message.toLowerCase().includes("approved")
-            ? "success"
-            : latest.message.toLowerCase().includes("rejected")
-              ? "error"
-              : "info",
-          confirmButtonText: "OK",
-          confirmButtonColor: "#2563eb"
-        });
-
-        for (const notification of unread) {
-          await markNotificationRead(notification.id);
-        }
-
+      if (notification.message.toLowerCase().includes("approved")) {
+        toast.success(notification.message);
+      } 
+      else if (notification.message.toLowerCase().includes("rejected")) {
+        toast.error(notification.message);
+      } 
+      else {
+        toast.info(notification.message);
       }
 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+      await markNotificationRead(notification.id);
+    });
+
+  } catch (error) {
+    console.error(error);
+  }
+};
   const getStatusColor = (status) => {
     if (status === "Approved") {
       return "bg-green-100 text-green-700";
