@@ -1031,14 +1031,14 @@ The deployed application contains sample employee accounts and leave requests fo
 
 ```text
 Username: manager@gmail.com
-Password: YOUR_MANAGER_PASSWORD
+Password: 123456
 ```
 
 ## Employee Account
 
 ```text
-Username: employee_gmail
-Password: YOUR_SAMPLE_EMPLOYEE_PASSWORD
+Username: alice@gmail.com
+Password: alice
 ```
 
 Replace the employee credentials with the sample account available in the deployed application.
